@@ -40,14 +40,10 @@ export default class Repository extends Component {
   }
 }
 
-Repository.defaultProps = {
-  match: { params: {} },
-};
-
 Repository.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
-      repository: PropTypes.string.isRequired,
+      repository: PropTypes.string,
     }),
-  }),
+  }).isRequired,
 };
