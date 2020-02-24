@@ -45,7 +45,7 @@ export const Owner = styled.header`
 export const IssueList = styled.ul`
   border-top: 1px solid #eee;
   list-style: none;
-  margin-top: 30px;
+  margin-top: 10px;
   padding-top: 30px;
 
   li {
@@ -99,5 +99,27 @@ export const IssueList = styled.ul`
       font-size: 12px;
       margin-top: 5px;
     }
+  }
+`;
+
+export const Filters = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+
+  button {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+
+    & + button {
+      margin-left: 5px;
+    }
+  }
+
+  & button#${props => props.selected} {
+    font-weight: bold;
   }
 `;
