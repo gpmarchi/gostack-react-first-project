@@ -12,6 +12,14 @@ export const Form = styled.form`
     font-size: 16px;
     padding: 10px 15px;
   }
+
+  ${props =>
+    props.error &&
+    css`
+      & input {
+        border: 1px solid red;
+      }
+    `}
 `;
 
 const rotate = keyframes`
