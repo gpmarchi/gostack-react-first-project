@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssueList, Filters } from './styles';
+import { Loading, Owner, IssueList, IssueFilter, Pagination } from './styles';
 
 export default class Repository extends Component {
   state = {
@@ -14,12 +15,13 @@ export default class Repository extends Component {
     loading: true,
     statuses: ['all', 'open', 'closed'],
     filter: 'open',
+    page: 1,
   };
 
   async componentDidMount() {
     const { match } = this.props;
 
-    const { filter } = this.state;
+    const { filter, page } = this.state;
 
     const repoName = decodeURIComponent(match.params.repository);
 
@@ -29,6 +31,7 @@ export default class Repository extends Component {
         params: {
           state: filter,
           per_page: 5,
+          page,
         },
       }),
     ]);
@@ -41,13 +44,14 @@ export default class Repository extends Component {
   }
 
   async componentDidUpdate(_, prevState) {
-    const { filter, repository } = this.state;
+    const { filter, repository, page } = this.state;
 
-    if (filter !== prevState.filter) {
+    if (filter !== prevState.filter || page !== prevState.page) {
       const issues = await api.get(`/repos/${repository.full_name}/issues`, {
         params: {
           state: filter,
           per_page: 5,
+          page,
         },
       });
 
@@ -55,12 +59,18 @@ export default class Repository extends Component {
     }
   }
 
-  handleChangeFilter = event => {
-    this.setState({ filter: event.target.id });
+  handleFilterChange = event => {
+    this.setState({ filter: event.target.id, page: 1 });
+  };
+
+  handlePageChange = action => {
+    const { page } = this.state;
+
+    this.setState({ page: action === 'next' ? page + 1 : page - 1 });
   };
 
   render() {
-    const { repository, issues, loading, statuses, filter } = this.state;
+    const { repository, issues, loading, statuses, filter, page } = this.state;
 
     if (loading) {
       return <Loading>Carregando</Loading>;
@@ -74,13 +84,18 @@ export default class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
-        <Filters selected={filter}>
+        <IssueFilter selected={filter}>
           {statuses.map(status => (
-            <button type="button" id={status} onClick={this.handleChangeFilter}>
+            <button
+              key={status}
+              type="button"
+              id={status}
+              onClick={this.handleFilterChange}
+            >
               {status}
             </button>
           ))}
-        </Filters>
+        </IssueFilter>
         <IssueList>
           {issues.map(issue => (
             <li key={String(issue.id)}>
@@ -97,6 +112,19 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+        <Pagination>
+          <button
+            type="button"
+            disabled={page < 2}
+            onClick={() => this.handlePageChange('previous')}
+          >
+            <FaChevronLeft color="#FFF" size={14} />
+          </button>
+          <span>{page}</span>
+          <button type="button" onClick={() => this.handlePageChange('next')}>
+            <FaChevronRight color="#FFF" size={14} />
+          </button>
+        </Pagination>
       </Container>
     );
   }

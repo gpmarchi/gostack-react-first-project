@@ -102,7 +102,7 @@ export const IssueList = styled.ul`
   }
 `;
 
-export const Filters = styled.div`
+export const IssueFilter = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 30px;
@@ -121,5 +121,33 @@ export const Filters = styled.div`
 
   & button#${props => props.selected} {
     font-weight: bold;
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+
+  button {
+    align-items: center;
+    background: #7159c1;
+    border: 0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  span {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 10px;
   }
 `;
